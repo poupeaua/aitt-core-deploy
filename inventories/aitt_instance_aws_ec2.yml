@@ -1,0 +1,18 @@
+# Allow to automactically discover AWS EC2 instances with specific filters
+plugin: amazon.aws.aws_ec2
+regions: []
+
+# Filters: Only pull instances that are running and have your specific tag
+filters:
+  instance-state-name: [ 'running' ]
+  tag:Project: [ 'aitt' ]  # Matches the tag we discussed earlier
+
+# Tell Ansible to use the Public IP for the connection
+compose:
+  ansible_host: public_ip_address
+
+groups:
+  # This says: "If a host is found, put it in the 'aitt-instance' group"
+  aitt_instance: true
+
+use_cache: yes

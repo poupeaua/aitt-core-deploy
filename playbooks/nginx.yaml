@@ -1,0 +1,48 @@
+---
+- name: Setup Nginx Reverse Proxy for Docker
+  hosts: aitt_instance
+  become: true
+
+  vars:
+    nginx_configfile_name: "aitt_reverse_proxy.conf"
+
+  tasks:
+    - name: Install Nginx
+      ansible.builtin.package:
+        name: nginx
+        state: present
+        update_cache: true
+
+    - name: Create Nginx sites-available directory
+      file:
+        path: /etc/nginx/sites-available
+        state: directory
+
+    - name: Create Nginx site-enabled directory
+      file:
+        path: /etc/nginx/sites-enabled
+        state: directory
+
+    - name: Copy Nginx configuration
+      template:
+        src: nginx_proxy.conf.j2
+        dest: /etc/nginx/sites-available/{{ nginx_configfile_name }}
+      notify: restart nginx
+
+    - name: Enable the configuration
+      file:
+        src: /etc/nginx/sites-available/{{ nginx_configfile_name }}
+        dest: /etc/nginx/sites-enabled/{{ nginx_configfile_name }}
+        state: link
+
+    - name: Remove default nginx config
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+      notify: restart nginx
+
+  handlers:
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted

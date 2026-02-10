@@ -1,0 +1,65 @@
+---
+- name: Deploy Docker Image from ECR to EC2
+  hosts: aitt_instance
+  become: true
+  vars:
+    ECR_REPOSITORY: "{{ AWS_ACCOUNT_ID }}.dkr.ecr.{{ AWS_REGION }}.amazonaws.com/{{ IMAGE_NAME }}"
+
+  tasks:
+
+    - name: Ensure Docker is started and enabled
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Ensure the Docker socket exists and is reachable
+      stat:
+        path: /var/run/docker.sock
+      register: docker_sock
+
+    - name: Fail if Docker socket is missing
+      fail:
+        msg: "The Docker socket was not found at /var/run/docker.sock. Is Docker installed?"
+      when: not docker_sock.stat.exists
+  
+    - name: Log into ECR
+      shell: "aws ecr get-login-password --region {{ AWS_REGION }} | docker login --username AWS --password-stdin {{ ECR_REPOSITORY }}"
+      changed_when: false
+
+    - name: Pull the latest image from ECR
+      docker_image:
+        name: "{{ ECR_REPOSITORY }}"
+        tag: "{{ IMAGE_TAG }}"
+        source: pull
+
+    - name: Create systemd service file for the container
+      copy:
+        dest: /etc/systemd/system/{{ SERVICE_NAME }}.service
+        content: |
+          [Unit]
+          Description=AITT Core Application Service
+          After=docker.service
+          Requires=docker.service
+
+          [Service]
+          TimeoutStartSec=0
+          Restart=always
+          ExecStartPre=-/usr/bin/docker stop %n
+          ExecStartPre=-/usr/bin/docker rm %n
+          ExecStartPre=/usr/bin/docker pull {{ ECR_REPOSITORY }}:{{ IMAGE_TAG }}
+          ExecStart=/usr/bin/docker run --network {{ DOCKER_NETWORK }} --rm --name %n -p {{ PORT_INPUT }}:80 {{ ECR_REPOSITORY }}:{{ IMAGE_TAG }}
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: Force systemd to reload configs
+      systemd:
+        daemon_reload: yes
+
+    - name: Start and enable the container service
+      systemd:
+        name: "{{ SERVICE_NAME }}"
+        state: restarted
+        enabled: yes
+      when: not ansible_check_mode

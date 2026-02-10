@@ -1,0 +1,11 @@
+[project]
+name = "aitt-core-deploy"
+version = "0.1.0"
+description = "Deployment code for the AITT Core application"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "ansible>=13.3.0",
+    "boto3>=1.42.39",
+    "botocore[crt]>=1.42.39",
+]
