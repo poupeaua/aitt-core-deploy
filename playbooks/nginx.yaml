@@ -35,6 +35,14 @@
         dest: /etc/nginx/sites-enabled/{{ nginx_configfile_name }}
         state: link
 
+    - name: Ensure nginx.conf includes sites-enabled
+      lineinfile:
+        path: /etc/nginx/nginx.conf
+        regexp: 'include /etc/nginx/conf.d/\*.conf;'
+        line: '    include /etc/nginx/conf.d/*.conf; include /etc/nginx/sites-enabled/*;'
+        backrefs: yes
+      notify: restart nginx
+
     - name: Remove default nginx config
       file:
         path: /etc/nginx/sites-enabled/default

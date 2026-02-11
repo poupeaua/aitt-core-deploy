@@ -48,7 +48,7 @@
           ExecStartPre=-/usr/bin/docker stop %n
           ExecStartPre=-/usr/bin/docker rm %n
           ExecStartPre=/usr/bin/docker pull {{ ECR_REPOSITORY }}:{{ IMAGE_TAG }}
-          ExecStart=/usr/bin/docker run --network {{ DOCKER_NETWORK }} --rm --name %n -p {{ PORT_INPUT }}:{{ PORT_INPUT }} {{ ECR_REPOSITORY }}:{{ IMAGE_TAG }}
+          ExecStart=/usr/bin/docker run --network {{ DOCKER_NETWORK }} --env HALFCIRCLE_SERVICE_URL={{ HALFCIRCLE_SERVICE_URL }} --rm --name %n -p {{ PORT_INPUT }}:{{ PORT_INPUT }} {{ ECR_REPOSITORY }}:{{ IMAGE_TAG }}
 
           [Install]
           WantedBy=multi-user.target
