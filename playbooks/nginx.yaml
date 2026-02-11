@@ -25,7 +25,7 @@
 
     - name: Copy Nginx configuration
       template:
-        src: nginx_proxy.conf.j2
+        src: utils/nginx_proxy.conf.j2
         dest: /etc/nginx/sites-available/{{ nginx_configfile_name }}
       notify: restart nginx
 
