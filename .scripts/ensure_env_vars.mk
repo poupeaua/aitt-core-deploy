@@ -14,5 +14,6 @@ check-env-vars:
 	$(call check_var,$(IMAGE_TAG),IMAGE_TAG)
 	$(call check_var,$(PORT_INPUT),PORT_INPUT)
 	$(call check_var,$(DOCKER_NETWORK),DOCKER_NETWORK)
-	$(call check_var,$(HALFCIRCLE_SERVICE_URL),SERVICE_NAME)
+	$(call check_var,$(HALFCIRCLE_SERVICE_URL),HALFCIRCLE_SERVICE_URL)
+	$(call check_var,$(SLUG),SLUG)
 	@echo "✅ All required environment variables are set."

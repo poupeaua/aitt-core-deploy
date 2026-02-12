@@ -27,11 +27,12 @@ ANSIBLE_PRIVATE_KEY_FILE=~/.ssh/keys/name-of-your-private-key.pem
 AWS_ACCOUNT_ID=************
 AWS_REGION=***
 IMAGE_NAME=aitt/core
-IMAGE_TAG=0.2.0
+IMAGE_TAG=0.3.0
 SERVICE_NAME=aitt-core
 PORT_INPUT=8001
 DOCKER_NETWORK=aitt-network
 HALFCIRCLE_SERVICE_URL=http://aitt-symbol-clf:8000
+SLUG=aitt
 ```
 
 
