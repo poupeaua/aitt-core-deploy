@@ -1,7 +1,7 @@
 server {
     listen 80 default_server;
     listen [::]:80 default_server;    
-    server_name _;
+    server_name app.alexandrepoupeau.com;
 
     location /{{ SLUG }} {
         proxy_pass http://127.0.0.1:{{ PORT_INPUT }};
