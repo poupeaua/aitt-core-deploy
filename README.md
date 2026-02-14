@@ -33,6 +33,8 @@ PORT_INPUT=8001
 DOCKER_NETWORK=aitt-network
 HALFCIRCLE_SERVICE_URL=http://aitt-symbol-clf:8000
 SLUG=aitt
+DOMAIN_NAME=youdomainname.com
+EMAIL_ADDRESS=youemail@address.com
 ```
 
 

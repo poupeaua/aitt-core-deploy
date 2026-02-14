@@ -16,4 +16,6 @@ check-env-vars:
 	$(call check_var,$(DOCKER_NETWORK),DOCKER_NETWORK)
 	$(call check_var,$(HALFCIRCLE_SERVICE_URL),HALFCIRCLE_SERVICE_URL)
 	$(call check_var,$(SLUG),SLUG)
+	$(call check_var,$(DOMAIN_NAME),DOMAIN_NAME)
+	$(call check_var,$(EMAIL_ADDRESS),EMAIL_ADDRESS)
 	@echo "✅ All required environment variables are set."

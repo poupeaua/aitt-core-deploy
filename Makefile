@@ -7,7 +7,9 @@ nginx: check-env-vars
 		-e "AWS_ACCOUNT_ID=${AWS_ACCOUNT_ID}" \
 		-e "AWS_REGION=${AWS_REGION}" \
 		-e "PORT_INPUT=${PORT_INPUT}" \
-		-e "SLUG=${SLUG}"
+		-e "SLUG=${SLUG}" \
+		-e "DOMAIN_NAME=${DOMAIN_NAME}" \
+		-e "EMAIL_ADDRESS=${EMAIL_ADDRESS}"
 
 deploy: check-env-vars
 	ansible-playbook playbooks/deploy.yaml \
