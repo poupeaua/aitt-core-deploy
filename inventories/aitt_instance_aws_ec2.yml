@@ -1,11 +1,16 @@
 # Allow to automactically discover AWS EC2 instances with specific filters
+# https://docs.ansible.com/projects/ansible/latest/collections/amazon/aws/aws_ec2_inventory.html
 plugin: amazon.aws.aws_ec2
 regions: []
 
 # Filters: Only pull instances that are running and have your specific tag
 filters:
-  instance-state-name: [ 'running' ]
-  tag:Project: [ 'aitt' ]  # Matches the tag we discussed earlier
+  # those filters are AND filters! All must be true so that it passes
+  instance-state-name: running
+  tag:Project: 
+    - aitt
+  tag:Env:
+    - "{{ lookup('env', 'ENV') }}"
 
 # Tell Ansible to use the Public IP for the connection
 compose:

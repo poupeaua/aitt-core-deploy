@@ -7,11 +7,24 @@
     nginx_configfile_name: "aitt_reverse_proxy.conf"
 
   tasks:
+
     - name: Install Nginx
       ansible.builtin.package:
         name: nginx
         state: present
         update_cache: true
+
+    - name: Install Certbot and Nginx plugin
+      ansible.builtin.package:
+        name: 
+          - certbot
+          - python3-certbot-nginx
+        state: present
+
+    - name: Check if HTTPS certificate already exists
+      ansible.builtin.stat:
+        path: "/etc/letsencrypt/live/{{ DOMAIN_NAME }}/fullchain.pem"
+      register: cert_file
 
     - name: Create Nginx sites-available directory
       file:
@@ -28,6 +41,7 @@
         src: utils/{{ nginx_configfile_name }}
         dest: /etc/nginx/sites-available/{{ nginx_configfile_name }}
       notify: restart nginx
+      when: not cert_file.stat.exists # no copy of nginx config file if cert exists
 
     - name: Enable the configuration
       file:
@@ -48,6 +62,11 @@
         path: /etc/nginx/sites-enabled/default
         state: absent
       notify: restart nginx
+
+    - name: Create certificate using Let's Encrypt
+      ansible.builtin.command:
+        cmd: "certbot --nginx -d {{ DOMAIN_NAME }} --non-interactive --agree-tos -m {{ EMAIL_ADDRESS }}"
+      when: not cert_file.stat.exists
 
   handlers:
     - name: restart nginx
