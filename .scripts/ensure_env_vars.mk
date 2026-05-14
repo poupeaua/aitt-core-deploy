@@ -10,6 +10,7 @@ check-env-vars:
 	$(call check_var,$(ANSIBLE_PRIVATE_KEY_FILE),ANSIBLE_PRIVATE_KEY_FILE)
 	$(call check_var,$(AWS_ACCOUNT_ID),AWS_ACCOUNT_ID)
 	$(call check_var,$(AWS_REGION),AWS_REGION)
+	$(call check_var,$(ENV),ENV)
 	$(call check_var,$(IMAGE_NAME),IMAGE_NAME)
 	$(call check_var,$(IMAGE_TAG),IMAGE_TAG)
 	$(call check_var,$(PORT_INPUT),PORT_INPUT)
